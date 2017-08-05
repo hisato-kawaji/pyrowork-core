@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion : "2010-09-09"
+Description : Build & Deploy Github code package
+Parameters:
+  GitHubOwner:
+    Type: String
+    Description: your GitHub repository owner name
+  GitHubToken:
+    Type: String
+    Description: your GitHub repository token
+  Repository:
+    Type: String
+    Description: your GitHub repository name
+  Branch:
+    Type: String
+    Description: your GitHub branch
+  ServiceName:
+    Description: Service Mame
+    Type: String
+    AllowedPattern: "[-_ a-zA-Z0-9]*"
+    ConstraintDescription: valid chars [-_ a-zA-Z0-9]
+  CodePipelineArtifactStoreBucket:
+    Type: String
+  CodePipelineRoleArn:
+    Type: String
+  CodeBuildRoleArn:
+    Type: String
+  CodeBuildImage:
+    Type: String
+    Default: "aws/codebuild/python:3.5.2"
+    Description: Image used for CodeBuild project.<Up>
+Resources:
+  CodeBuildProject:
+    Description: AWS CodeBuild project
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+        Description: !Sub Building Branch: ${Branch}.
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - 
+            Name: Branch
+            Value: !Ref Branch
+        Image: !Ref CodeBuildImage
+        Type: LINUX_CONTAINER
+      Name: !Sub ${ServiceName}-${Branch}-build
+      ServiceRole: !Ref CodeBuildRoleArn
+      Source:
+        Type: CODEPIPELINE
+  CodePipeLineProject:
+    Description: AWS CodePipeLine
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore: ArtifactStore
+      Name: deployment name
+      RestartExecutionOnUpdate: True
+        RoleArn: String
+        Stages:
+          - 
+            Name: Source
+            Actions: 
+              - 
+                Name: SourceAction
+                ActionTypeId: 
+                  Category: Source
+                  Owner: ThirdParty
+                  Version: 1
+                  Provider: GitHub
+                OutputArtifacts: 
+                  - 
+                    Name: SourceOutput
+                Configuration:
+                  Owner: !Ref GitHubOwner
+                  Repo: !Ref Repository
+                  Branch: !Ref Branch
+                  OAtuhToken: Ref GitHubToken
+                RunOrder: 1
+          - 
+            Name: Build
+            Actions: 
+              - 
+                Name: BuildAction
+                InputArtifacts: 
+                  - 
+                    Name: SourceOutput
+                  ActionTypeId: 
+                    Category: Build
+                    Owner: AWS
+                     Version: 1
+                    Provider: CodeDeploy
+                  Configuration: 
+                    ApplicationName: 
+                      Ref: ApplicationName
+                    DeploymentGroupName: 
+                     Ref: DeploymentGroupName
+                  RunOrder: 1
+          - 
+            Name: Deploy
+            Actions: 
+              - 
+                Name: DeployAction
+                InputArtifacts: 
+                  - 
+                    Name: SourceOutput
+                  ActionTypeId: 
+                    Category: Invoke
+                    Owner: AWS
+                     Version: 1
+                    Provider: CodeDeploy
+                  Configuration: 
+                    ApplicationName: 
+                      Ref: ApplicationName
+                    DeploymentGroupName: 
+                     Ref: DeploymentGroupName
+                  RunOrder: 1
