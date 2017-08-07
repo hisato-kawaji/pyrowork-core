@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-class NoUserException(Exception):
-    pass
+class NoRecordsException(Exception): pass
 
 
-class NoSampleException(Exception):
-    pass
+class InvalidValueException(Exception): pass
+
+
+class ResourceException(Exception): pass
+
+
+class FunctionException(Exception): pass
