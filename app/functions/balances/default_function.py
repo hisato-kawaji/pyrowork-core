@@ -41,7 +41,7 @@ def get_record_by_unique(event, context):
 def get_stream_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(Config().table_name)
+        table = dynamodb.Table(Config().stream_table_name)
         balance_cond = Key('balance_id').eq(event['path']['balance_id'])
         response = table.query(
             KeyConditionExpression=balance_cond
