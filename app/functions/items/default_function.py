@@ -12,30 +12,18 @@ from framework import Exceptions as ex
 
 def get_by_id(event, context):
     def main(event, context):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(Config().table_name)
+        response = table.get_item(
+            Keys={'item_id': event['path']['id']}
+        )
 
-    return Executor.run(main, event, context)
+        if not response.get('Item'):
+            raise ex.NoRecordsException(
+                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+            )
 
-
-def get_all(event, context):
-    def main(event, context):
-
-    return Executor.run(main, event, context)
-
-
-def create(event, context):
-    def main(event, context):
-
-    return Executor.run(main, event, context)
-
-
-def update(event, context):
-    def main(event, context):
-
-    return Executor.run(main, event, context)
-
-
-def delete(event, context):
-    def main(event, context):
+        return response
 
     return Executor.run(main, event, context)
 

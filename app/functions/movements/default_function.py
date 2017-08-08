@@ -6,40 +6,96 @@ from __future__ import print_function
 import boto3
 import sys
 import os
+from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
+from boto3.dynamodb.conditions import Key
 
 
-def get_by_id(event, context):
+def get_record_by_unique(event, context):
     def main(event, context):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(Config().table_name)
+        keys = {
+            'user_id': event['path']['user_id'],
+            'started_at': event['path']['started_at']
+        }
+        response = table.get_item(
+            Keys=keys
+        )
+
+        if not response.get('Item'):
+            raise ex.NoRecordsException(
+                '%s:%s:%s is not found' % (
+                    Config().table_name,
+                    event['path']['user_id'],
+                    event['path']['started_at']
+                )
+            )
+
+        return response
 
     return Executor.run(main, event, context)
 
 
-def get_all(event, context):
+def get_stream_by_unique(event, context):
     def main(event, context):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(Config().table_name)
+        movement_cond = Key('movement_id').eq(event['path']['movement_id'])
+        if event['path']['measure_type']:
+            type_cond = Key('started_at').eq(event['path']['measure_type'])
+            response = table.query(
+                KeyConditionExpression=movement_cond & type_cond
+            )
+
+        else:
+            response = table.query(
+                KeyConditionExpression=movement_cond
+            )
+
+        if not response.get('Items'):
+            raise ex.NoRecordsException(
+                '%s:%s is not found' % (
+                    Config().table_name,
+                    event['path']['movement_id']
+                )
+            )
+
+        return response
 
     return Executor.run(main, event, context)
 
 
 def create(event, context):
     def main(event, context):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(Config().table_name)
 
-    return Executor.run(main, event, context)
+        user_id = event['event']['user_id']
+        duplicate_key = {
+            'user_id': user_id,
+            'started_at': event['body']['started_at']
+        }
 
+        if table.get_item(Keys=duplicate_key):
+            raise ex.InvalidValueExvception('Duplicated primary key')
 
-def update(event, context):
-    def main(event, context):
+        user = {
+            'user_id': user_id,
+            'started_at': None,
+            'ended_at': None,
+            'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        }
 
-    return Executor.run(main, event, context)
+        user.update(event['body'])
+        response = table.put_item(Item=user)
 
-
-def delete(event, context):
-    def main(event, context):
+        return response
 
     return Executor.run(main, event, context)
 
 
 if __name__ == '__main__':
     print('Cannot execute lambda functions directory. Try to use test console command')
-
