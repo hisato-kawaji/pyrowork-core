@@ -18,6 +18,6 @@ phases:
 artifacts:
   type: zip
   files:
-    - '**/*'
+    - './target/*'
   base-directory: 'target'
-  discard-paths: yes
+  discard-paths: no
