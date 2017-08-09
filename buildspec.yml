@@ -20,4 +20,4 @@ artifacts:
   files:
     - '**/*'
   base-directory: 'target'
-  discard-paths: no
+  discard-paths: yes
