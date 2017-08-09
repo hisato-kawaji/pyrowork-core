@@ -5,7 +5,8 @@ phases:
     commands:
       - echo Install Phase
       - pip install -t ./target/ -r app/functions/$TARGET_DIRECTORY/requirements.txt
-      - cp -r app/functions/$TARGET_DIRECTORY/ ./target/
+      - cp -r app/functions/$TARGET_DIRECTORY/* ./target/
+      - cp ./app/core/template/init_template.py ./target/framework/__init__.py
   pre_build:
     commands:
       - echo Pre-build Phase
