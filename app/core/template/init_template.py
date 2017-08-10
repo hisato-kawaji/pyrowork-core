@@ -1,3 +1,4 @@
 import sys
-from .core import Config, Executor
-from .exceptions import Exceptions as Exceptions
+sys.path.append('./framework/')
+from core import Config, Executor
+import exceptions as Exceptions
