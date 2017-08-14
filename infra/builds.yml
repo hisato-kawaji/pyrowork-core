@@ -39,7 +39,7 @@ Resources:
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         EnvironmentVariables:
-          - 
+          -
             Name: Branch
             Value: !Ref Branch
         Image: !Ref CodeBuildImage
@@ -57,18 +57,18 @@ Resources:
       RestartExecutionOnUpdate: True
         RoleArn: String
         Stages:
-          - 
+          -
             Name: Source
-            Actions: 
-              - 
+            Actions:
+              -
                 Name: SourceAction
-                ActionTypeId: 
+                ActionTypeId:
                   Category: Source
                   Owner: ThirdParty
                   Version: 1
                   Provider: GitHub
-                OutputArtifacts: 
-                  - 
+                OutputArtifacts:
+                  -
                     Name: SourceOutput
                 Configuration:
                   Owner: !Ref GitHubOwner
@@ -76,41 +76,41 @@ Resources:
                   Branch: !Ref Branch
                   OAtuhToken: Ref GitHubToken
                 RunOrder: 1
-          - 
+          -
             Name: Build
-            Actions: 
-              - 
+            Actions:
+              -
                 Name: BuildAction
-                InputArtifacts: 
-                  - 
+                InputArtifacts:
+                  -
                     Name: SourceOutput
-                  ActionTypeId: 
+                  ActionTypeId:
                     Category: Build
                     Owner: AWS
                      Version: 1
                     Provider: CodeDeploy
-                  Configuration: 
-                    ApplicationName: 
+                  Configuration:
+                    ApplicationName:
                       Ref: ApplicationName
-                    DeploymentGroupName: 
+                    DeploymentGroupName:
                      Ref: DeploymentGroupName
                   RunOrder: 1
-          - 
+          -
             Name: Deploy
-            Actions: 
-              - 
+            Actions:
+              -
                 Name: DeployAction
-                InputArtifacts: 
-                  - 
+                InputArtifacts:
+                  -
                     Name: SourceOutput
-                  ActionTypeId: 
+                  ActionTypeId:
                     Category: Invoke
                     Owner: AWS
                      Version: 1
                     Provider: CodeDeploy
-                  Configuration: 
-                    ApplicationName: 
+                  Configuration:
+                    ApplicationName:
                       Ref: ApplicationName
-                    DeploymentGroupName: 
+                    DeploymentGroupName:
                      Ref: DeploymentGroupName
                   RunOrder: 1
