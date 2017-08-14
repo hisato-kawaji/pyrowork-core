@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
+import exceptions as ex
+
 
 class Config:
     __instance = None
@@ -17,22 +19,23 @@ class Config:
 
 
 class Executor:
+    __instance = None
 
     def __new__(cls, *args, **kwargs):
         if cls.__instance is None:
             cls.__instance = super(Executor, cls).__new__(cls, *args, **kwargs)
         return cls.__instance
 
-    def __init__(self, *args, **kwargs):
-        for key, value in os.environ.items():
-            setattr(self, key, value)
-
-    def run(function, *args):
+    def run(self, function, event, content):
+        '''
+            runing lambda handler
+        '''
         try:
-            ret = function(*args)
-            return ret
+            ret = function(event, content)
+        except ex.PyroException as e:
+            message = str(e.st_code) + ':' + e.errmsg + ' type:' + type(e)
+            raise Exception(message)
         except Exception as e:
-            print("type:{0}".format(type(e)))
-            print("args:{0}".format(e.args))
-        except:
-              print("Unexpected error:", sys.exc_info()[0])
+            raise e
+        else:
+            return ret
