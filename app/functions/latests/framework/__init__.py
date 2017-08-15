@@ -1,4 +1,4 @@
 import sys
-sys.path.append('../../')
+sys.path.append('../')
 from core import Config, Executor
-import core.exceptions as Exceptions
+import exceptions as Exceptions
