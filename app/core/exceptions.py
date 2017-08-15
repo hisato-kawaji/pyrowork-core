@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-class PyroException:
+class PyroException(BaseException):
     st_code = 500
     errmsg = 'Unknown invalid requests'
 

@@ -13,7 +13,7 @@ from framework import Exceptions as ex
 def get_by_id(event, context):
     def main(event, context):
         print(Config().TERM)
-        raise ex.NoSampleException("error!")
+        raise Exception('hoge')
 
     Executor.run(main, event, context)
 
