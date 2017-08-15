@@ -38,7 +38,7 @@ def get_all(event, context):
 
         if not response.get('Item'):
             raise ex.NoRecordsException(
-                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+                '%s is not found' % Config().table_name
             )
 
         data = response['Items']
