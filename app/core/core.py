@@ -26,16 +26,18 @@ class Executor:
             cls.__instance = super(Executor, cls).__new__(cls, *args, **kwargs)
         return cls.__instance
 
-    def run(self, function, event, content):
+    @classmethod
+    def run(cls, function, event, content):
         '''
             runing lambda handler
         '''
         try:
             ret = function(event, content)
-        except ex.PyroException as e:
-            message = str(e.st_code) + ':' + e.errmsg + ' type:' + type(e)
-            raise Exception(message)
-        except Exception as e:
-            raise e
+        except (ex.PyroException, Exception) as e:
+            if  isinstance(e, ex.PyroException):
+                message = str(e.st_code) + ':' + e.errmsg
+                raise Exception(message)
+            else:
+                raise e
         else:
             return ret

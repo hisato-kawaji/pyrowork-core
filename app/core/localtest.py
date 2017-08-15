@@ -21,10 +21,11 @@ def test_console():
     context = args.context
     lambda_function = args.function
     event_handler = args.handler
-
+    sys.path.append('../functions/' + lambda_function)
     test_module = importlib.import_module(
         lambda_function + '.default_function'
     )
+
     method = getattr(test_module, event_handler)
     assert method(event, context), 'assertion: ' + lambda_function + ':' + event_handler
 
