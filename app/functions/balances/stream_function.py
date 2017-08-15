@@ -15,7 +15,7 @@ from framework import Exceptions as ex
 def create_stream(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(Config().stream_table_name)
+        table = dynamodb.Table(Config().table_name)
         with table.batch_writer() as batch:
             for record in event['Records']:
                 new_data = json.loads(base64.b64decode(record['kinesis']['data']).decode('utf-8'))

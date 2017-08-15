@@ -41,7 +41,7 @@ def get_record_by_unique(event, context):
 def get_stream_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.Table(Config().stream_table_name)
+        table = dynamodb.Table(Config().table_name)
         movement_cond = Key('movement_id').eq(event['path']['movement_id'])
         if event['path']['measure_type']:
             type_cond = Key('started_at').eq(event['path']['measure_type'])
