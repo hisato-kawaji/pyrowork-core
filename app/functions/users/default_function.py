@@ -35,7 +35,10 @@ def get_by_institution_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         key_condition = Key('institution_id').eq(event['path']['id'])
-        response_users = table.query(KeyConditionExpression=key_condition)
+        response_users = table.query(
+            IndexName='UserId-InstitutionId',
+            KeyConditionExpression=key_condition
+        )
 
         user_list = []
         for item in response_users['Items']:
@@ -47,7 +50,7 @@ def get_by_institution_id(event, context):
             }
         })
 
-        return response
+        return response['Responses'][Config().table_name]
 
     return Executor.run(main, event, context)
 
