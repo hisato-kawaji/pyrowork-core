@@ -38,7 +38,7 @@ class Executor:
                 message = str(pe.st_code) + ':' + pe.errmsg
                 raise Exception(message)
             else:
-                message = '500:' + pe.errmsg
+                message = '500:' + pe
                 raise Exception(message)
         else:
             return ret
