@@ -29,15 +29,16 @@ class Executor:
     @classmethod
     def run(cls, function, event, content):
         '''
-            runing lambda handler
+            running lambda handler
         '''
         try:
             ret = function(event, content)
-        except (ex.PyroException, Exception) as e:
-            if  isinstance(e, ex.PyroException):
-                message = str(e.st_code) + ':' + e.errmsg
+        except (ex.PyroException, Exception) as pe:
+            if isinstance(pe, ex.PyroException):
+                message = str(pe.st_code) + ':' + pe.errmsg
                 raise Exception(message)
             else:
-                raise e
+                message = '500:' + pe.errmsg
+                raise Exception(message)
         else:
             return ret
