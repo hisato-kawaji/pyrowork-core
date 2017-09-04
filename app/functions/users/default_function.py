@@ -44,6 +44,11 @@ def get_by_institution_id(event, context):
         for item in response_users['Items']:
             user_list.append({'id': item['id']})
 
+        if user_list == []:
+            raise ex.NoRecordsException(
+                '%s:institution_id=%s is not found' % (Config().table_name, event['path']['id'])
+            )
+
         response = table.batch_get_item(RequestItems={
             Config().table_name: {
                 'Keys': user_list
