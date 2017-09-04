@@ -35,10 +35,10 @@ class Executor:
             ret = function(event, content)
         except (ex.PyroException, Exception) as pe:
             if isinstance(pe, ex.PyroException):
-                message = str(pe.st_code) + ':' + pe.errmsg
+                message = 'statusCode:' + str(pe.st_code) + ':' + pe.errmsg
                 raise Exception(message)
             else:
-                message = '500: Internal Server Error'
+                message = 'statusCode:500: Internal Server Error'
                 raise Exception(message)
         else:
             return ret
