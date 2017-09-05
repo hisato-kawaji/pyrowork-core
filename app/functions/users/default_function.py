@@ -49,10 +49,8 @@ def get_by_institution_id(event, context):
                 '%s:institution_id=%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        response = table.batch_get_item(RequestItems={
-            Config().table_name: {
-                'Keys': user_list
-            }
+        response = table.get_item(RequestItems={
+            'Keys': user_list
         })
 
         return response['Responses'][Config().table_name]
