@@ -39,6 +39,7 @@ class Executor:
                 raise Exception(message)
             else:
                 message = 'statusCode:500: Internal Server Error'
-                raise Exception(message)
+                # raise Exception(message)
+                raise pe
         else:
             return ret
