@@ -41,7 +41,7 @@ def update(event, context):
         user_attributes = []
         client = boto3.client('cognito-idp')
         return client.admin_update_user_attributes(
-            UserPoolId=Config().coginito_pool_id,
+            UserPoolId=Config().coginito_user_pool_id,
             Username=event['user_name'],
             UserAttributes=user_attributes
         )
