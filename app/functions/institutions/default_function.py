@@ -71,18 +71,14 @@ def create(event, context):
 
         institution = {
             'id': institution_id,
-            'cognito_id': None,
+            'cognito_sub': None,
             'name': None,
             'admin': None,
-            'login_name': None,
+            'username': None,
             'email': None,
-            'tel': None,
             'company': None,
             'company_kana': None,
             'registerd_at': None,
-            'zipcode': None,
-            'address': None,
-            'fax': None,
             'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
             'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         }

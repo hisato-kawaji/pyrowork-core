@@ -73,6 +73,7 @@ def create(event, context):
 
         user = {
             'user_id': user_id,
+            'measure_type': None,
             'time': None,
             'started_at': None,
             'ended_at': None,

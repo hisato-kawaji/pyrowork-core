@@ -83,6 +83,7 @@ def create(event, context):
 
         user = {
             'user_id': user_id,
+            'side': None,
             'started_at': None,
             'ended_at': None,
             'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),

@@ -72,6 +72,7 @@ def create(event, context):
 
         if table.get_item(Keys=duplicate_key):
             raise ex.InvalidValueExvception('Duplicated primary key')
+
         user = {
             'id': user_id,
             'institution_id': None,
@@ -80,6 +81,7 @@ def create(event, context):
             'last_name': None,
             'family_name_kana': None,
             'last_name_kana': None,
+            'nc_level': None,
             'gender': None,
             'birthday': None,
             'entered_at': None,
