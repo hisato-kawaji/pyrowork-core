@@ -6,6 +6,7 @@ from __future__ import print_function
 import boto3
 import sys
 import os
+import uuid
 from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
@@ -65,9 +66,10 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        user_id = event['path']['id']
+        user_id = str(uuid.uuid4())
         duplicate_key = {
-            'id': user_id
+            'id': user_id,
+            'institution_id': event['body']['institution_id']
         }
 
         if table.get_item(Keys=duplicate_key):

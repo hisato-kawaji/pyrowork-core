@@ -6,6 +6,8 @@ from __future__ import print_function
 import boto3
 import sys
 import os
+import json
+import uuid
 from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
@@ -61,7 +63,7 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        institution_id = event['path']['id']
+        institution_id = str(uuid.uuid4())
         duplicate_key = {
             'id': institution_id
         }
@@ -109,9 +111,16 @@ def update(event, context):
         institution = institution_old['Item']
         institution.update(event['body'])
         institution['updated_at'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-        response = table.put_item(Item=institution)
+        table.put_item(Item=institution)
 
-        return response
+        lambda_client = boto3.client('lambda')
+        lambda_response = lambda_client.invoke(
+            FunctionName=os.environ.get('cognito_update_function_name'),
+            Payload=json.dumps(event),
+            Qualifier='Release'
+        )
+
+        return lambda_response
 
     return Executor.run(main, event, context)
 
