@@ -45,7 +45,7 @@ def get_all(event, context):
 
         data = response['Items']
 
-        if 'LastEvaluatedKey' in response:
+        while 'LastEvaluatedKey' in response:
             response = table.scan(
                 ExclusiveStartKey=response['LastEvaluatedKey']
             )
@@ -115,7 +115,7 @@ def update(event, context):
 
         lambda_client = boto3.client('lambda')
         lambda_response = lambda_client.invoke(
-            FunctionName=os.environ.get('cognito_update_function_name'),
+            FunctionName=Config().cognito_update_function_name,
             Payload=json.dumps(event),
             Qualifier='Release'
         )

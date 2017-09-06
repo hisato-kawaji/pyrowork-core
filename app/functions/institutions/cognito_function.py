@@ -52,7 +52,7 @@ def forget_password(event, context):
     def main(event, context):
         client = boto3.client('cognito-idp')
         return client.forgot_password(
-            ClientId=os.environ['cognito_client_id'],
+            ClientId=Config().cognito_client_id,
             Username=event['path']['username']
         )
     return Executor.run(main, event, context)
