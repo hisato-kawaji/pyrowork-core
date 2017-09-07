@@ -3,10 +3,8 @@
 
 from __future__ import print_function
 
-import boto3
-import sys
-import os
 import json
+import boto3
 from framework import Config, Executor
 from framework import Exceptions as ex
 
@@ -24,6 +22,7 @@ def confirm(event, context):
             Username=event['UserName'],
             UserAttributes=user_attributes
         )
+
         lambda_client = boto3.client('lambda')
         lambda_response = lambda_client.invoke(
             FunctionName=Config.create_function_name,
