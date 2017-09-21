@@ -26,7 +26,7 @@ def get_by_id(event, context):
                 '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        return response
+        return response['Item']
 
     return Executor.run(main, event, context)
 

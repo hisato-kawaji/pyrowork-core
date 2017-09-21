@@ -23,7 +23,7 @@ def get_by_id(event, context):
                 'created_at': event['path']['created_at'],
                 'item_id': event['path']['item_id']
             }
-            response = table.get_dditem(
+            response = table.get_item(
                 Keys=keys
             )
 
@@ -47,7 +47,10 @@ def get_by_id(event, context):
                 '%s:%s is not found' % (Config().table_name, event['path']['user_id'])
             )
 
-        return response
+        if response.get('Items'):
+            return response['Items']
+        else:
+            return response['Item']
 
     return Executor.run(main, event, context)
 

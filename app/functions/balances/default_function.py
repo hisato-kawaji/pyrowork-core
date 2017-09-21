@@ -33,7 +33,7 @@ def get_record_by_unique(event, context):
                 )
             )
 
-        return response
+        return response['Item']
 
     return Executor.run(main, event, context)
 
@@ -52,7 +52,7 @@ def get_stream_by_unique(event, context):
                 '%s:%s is not found' % (Config().table_name, event['path']['balance_id'])
             )
 
-        return response
+        return response['Item']
 
     return Executor.run(main, event, context)
 

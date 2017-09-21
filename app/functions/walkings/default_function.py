@@ -39,7 +39,10 @@ def get_record_by_unique(event, context):
                 '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        return response
+        if response.get['Items']:
+            return response['Items']
+        else:
+            return response['Item']
 
     return Executor.run(main, event, context)
 
@@ -65,7 +68,7 @@ def get_stream_by_unique(event, context):
                 '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        return response
+        return response['Responses'][Config().table_name]
 
     return Executor.run(main, event, context)
 
