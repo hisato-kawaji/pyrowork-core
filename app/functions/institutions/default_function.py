@@ -114,16 +114,17 @@ def update(event, context):
         institution = institution_old['Item']
         institution.update(event['body'])
         institution['updated_at'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-        table.put_item(Item=institution)
+        response = table.put_item(Item=institution)
 
-        lambda_client = boto3.client('lambda')
-        lambda_response = lambda_client.invoke(
-            FunctionName=Config().cognito_update_function_name,
-            Payload=json.dumps(event),
-            Qualifier='Release'
-        )
+        # lambda_client = boto3.client('lambda')
+        # lambda_response = lambda_client.invoke(
+        #     FunctionName=Config().cognito_update_function_name,
+        #     Payload=json.dumps(event),
+        #     Qualifier='Release'
+        # )
 
-        return lambda_response
+        # return lambda_response
+        return response
 
     return Executor.run(main, event, context)
 
