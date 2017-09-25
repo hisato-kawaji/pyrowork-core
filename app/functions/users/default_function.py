@@ -18,7 +18,7 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Keys={'id': event['path']['id']}
+            Key={'id': event['path']['id']}
         )
 
         if not response.get('Item'):
@@ -72,7 +72,7 @@ def create(event, context):
             'institution_id': event['body']['institution_id']
         }
 
-        if table.get_item(Keys=duplicate_key):
+        if table.get_item(Key=duplicate_key):
             raise ex.InvalidValueExvception('Duplicated primary key')
 
         user = {
@@ -109,7 +109,7 @@ def update(event, context):
             'id': event['path']['user_id']
         }
 
-        user_old = table.get_item(Keys=duplicate_key)
+        user_old = table.get_item(Key=duplicate_key)
         if 'Item' not in user_old:
             raise ex.NoRecordExvception(
                 '%s:%s is not fount' % (Config().table_name, event['path']['user_id'])

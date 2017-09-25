@@ -17,17 +17,17 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        if event['path']['created'] and event['path']['item_id']:
+        if event['path']['created_at'] and event['path']['item_id']:
             keys = {
                 'user_id': event['path']['user_id'],
                 'created_at': event['path']['created_at'],
                 'item_id': event['path']['item_id']
             }
             response = table.get_item(
-                Keys=keys
+                Key=keys
             )
 
-        elif event['path']['created']:
+        elif event['path']['created_at']:
             user_cond = Key('user_id').eq(event['path']['user_id'])
             start_cond = Key('created_at').eq(event['path']['created'])
 
@@ -66,7 +66,7 @@ def create(event, context):
             'item_id': event['path']['item_id']
         }
 
-        if table.get_item(Keys=duplicate_key):
+        if table.get_item(Key=duplicate_key):
             raise ex.InvalidValueExvception('Duplicated primary key')
 
         rom_measurement = {

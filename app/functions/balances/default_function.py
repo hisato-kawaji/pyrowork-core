@@ -21,7 +21,7 @@ def get_record_by_unique(event, context):
             'started_at': event['path']['started_at']
         }
         response = table.get_item(
-            Keys=keys
+            Key=keys
         )
 
         if not response.get('Item'):
@@ -68,7 +68,7 @@ def create(event, context):
             'started_at': event['body']['started_at']
         }
 
-        if table.get_item(Keys=duplicate_key):
+        if table.get_item(Key=duplicate_key):
             raise ex.InvalidValueExvception('Duplicated primary key')
 
         user = {

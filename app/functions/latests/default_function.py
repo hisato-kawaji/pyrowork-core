@@ -16,7 +16,7 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Keys={
+            Key={
                 'user_id': event['path']['user_id'],
                 'menu_id': event['path']['menu_id']
             }
@@ -41,7 +41,7 @@ def save(event, context):
             'user_id': event['body']['user_id'],
             'menu_id': event['body']['menu_id']
         }
-        latest_record = table.get_item(Keys=duplicate_key)
+        latest_record = table.get_item(Key=duplicate_key)
 
         if 'Item' not in latest_record:
             latest_record.update(event['body'])

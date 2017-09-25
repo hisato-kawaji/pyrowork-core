@@ -23,7 +23,7 @@ def get_record_by_unique(event, context):
                 'measure_type': event['path']['measure_type']
             }
             response = table.get_item(
-                Keys=keys
+                Key=keys
             )
 
         else:
@@ -85,7 +85,7 @@ def create(event, context):
             'measure_type': event['body']['measure_type']
         }
 
-        if table.get_item(Keys=duplicate_key):
+        if table.get_item(Key=duplicate_key):
             raise ex.InvalidValueExvception('Duplicated primary key')
 
         user = {
