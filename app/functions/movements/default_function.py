@@ -72,9 +72,8 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        user_id = event['event']['user_id']
         duplicate_key = {
-            'user_id': user_id,
+            'user_id': event['body']['user_id'],
             'started_at': event['body']['started_at']
         }
 
@@ -83,7 +82,7 @@ def create(event, context):
             raise ex.InvalidValueExvception('Duplicated primary key')
 
         user = {
-            'user_id': user_id,
+            'user_id': None,
             'side': None,
             'started_at': None,
             'ended_at': None,

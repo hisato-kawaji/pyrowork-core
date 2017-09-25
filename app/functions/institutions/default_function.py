@@ -62,6 +62,8 @@ def create(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
+        if 'id' in event['body']:
+            raise ex.InvalidValueException('You cannot include id column in your request object')
 
         institution_id = str(uuid.uuid4())
         duplicate_key = {
