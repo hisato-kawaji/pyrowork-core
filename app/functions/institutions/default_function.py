@@ -38,7 +38,7 @@ def get_all(event, context):
         table = dynamodb.Table(Config().table_name)
         response = table.scan()
 
-        if not response.get('Item'):
+        if not response.get('Items'):
             raise ex.NoRecordsException(
                 '%s is not found' % Config().table_name
             )
