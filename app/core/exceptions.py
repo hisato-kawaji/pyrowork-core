@@ -16,7 +16,7 @@ class NoRecordsException(PyroException):
     errmsg = 'No records was found through your query'
 
 
-class InvalidParamException(PyroException):
+class InvalidValueException(PyroException):
     '''
         response error on validation of your request parameters
     '''
