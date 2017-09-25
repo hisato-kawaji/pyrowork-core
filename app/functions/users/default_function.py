@@ -111,7 +111,7 @@ def update(event, context):
 
         user_old = table.get_item(Key=duplicate_key)
         if 'Item' not in user_old:
-            raise ex.NoRecordException(
+            raise ex.NoRecordsException(
                 '%s:%s is not fount' % (Config().table_name, event['path']['user_id'])
             )
         user = user_old['Item']

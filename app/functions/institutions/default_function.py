@@ -106,7 +106,7 @@ def update(event, context):
 
         institution_old = table.get_item(Key=duplicate_key)
         if 'Item' not in institution_old:
-            raise ex.NoRecordException(
+            raise ex.NoRecordsException(
                 '%s:%s is not fount' % (Config().table_name, institution_id)
             )
         institution = institution_old['Item']
