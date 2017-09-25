@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import sys
 import os
+import datetime
+from datetime import datetime as dt
 import exceptions as ex
 
 
@@ -17,6 +19,8 @@ class Config:
         for key, value in os.environ.items():
             setattr(self, key, value)
 
+    def now(self):
+        return (dt.utcnow() + datetime.timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')
 
 class Executor:
     __instance = None
