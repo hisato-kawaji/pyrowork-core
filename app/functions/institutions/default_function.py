@@ -4,11 +4,7 @@
 from __future__ import print_function
 
 import boto3
-import sys
-import os
-import json
 import uuid
-from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
 
@@ -84,8 +80,8 @@ def create(event, context):
             'company': None,
             'company_kana': None,
             'registerd_at': None,
-            'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            'created_at': Config().now(),
+            'updated_at': Config().now()
         }
 
         institution.update(event['body'])
@@ -113,7 +109,7 @@ def update(event, context):
             )
         institution = institution_old['Item']
         institution.update(event['body'])
-        institution['updated_at'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        institution['updated_at'] = Config().now()
         response = table.put_item(Item=institution)
 
         # lambda_client = boto3.client('lambda')
