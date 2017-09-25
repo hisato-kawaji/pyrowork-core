@@ -66,8 +66,9 @@ def create(event, context):
             'item_id': event['path']['item_id']
         }
 
-        if table.get_item(Key=duplicate_key):
-            raise ex.InvalidValueExvception('Duplicated primary key')
+        duplicated = table.get_item(Key=duplicate_key)
+        if 'Item' in duplicated:
+            raise ex.InvalidValueException('Duplicated primary key')
 
         rom_measurement = {
             'user': event['path']['user_id'],

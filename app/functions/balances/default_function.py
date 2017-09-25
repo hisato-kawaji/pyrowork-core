@@ -68,8 +68,9 @@ def create(event, context):
             'started_at': event['body']['started_at']
         }
 
-        if table.get_item(Key=duplicate_key):
-            raise ex.InvalidValueExvception('Duplicated primary key')
+        duplicated = table.get_item(Key=duplicate_key):
+        if 'Item' in duplicated:
+            raise ex.InvalidValueException('Duplicated primary key')
 
         user = {
             'user_id': user_id,

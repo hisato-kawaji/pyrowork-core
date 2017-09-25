@@ -85,8 +85,9 @@ def create(event, context):
             'measure_type': event['body']['measure_type']
         }
 
-        if table.get_item(Key=duplicate_key):
-            raise ex.InvalidValueExvception('Duplicated primary key')
+        duplicated = table.get_item(Key=duplicate_key)
+        if 'Item' in duplicated:
+            raise ex.InvalidValueException('Duplicated primary key')
 
         user = {
             'user_id': user_id,

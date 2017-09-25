@@ -70,7 +70,7 @@ def create(event, context):
 
         duplicated = table.get_item(Key=duplicate_key)
         if 'Item' in duplicated:
-            raise ex.InvalidValueExvception('Duplicated primary key')
+            raise ex.InvalidValueException('Duplicated primary key')
 
         institution = {
             'id': institution_id,
@@ -106,7 +106,7 @@ def update(event, context):
 
         institution_old = table.get_item(Key=duplicate_key)
         if 'Item' not in institution_old:
-            raise ex.NoRecordExvception(
+            raise ex.NoRecordException(
                 '%s:%s is not fount' % (Config().table_name, institution_id)
             )
         institution = institution_old['Item']

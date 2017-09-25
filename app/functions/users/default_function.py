@@ -71,9 +71,9 @@ def create(event, context):
             'id': user_id,
             'institution_id': event['body']['institution_id']
         }
-
-        if table.get_item(Key=duplicate_key):
-            raise ex.InvalidValueExvception('Duplicated primary key')
+        duplicated = table.get_item(Key=duplicate_key)
+        if 'Item' in duplicated:
+            raise ex.InvalidValueException('Duplicated primary key')
 
         user = {
             'id': user_id,
@@ -111,7 +111,7 @@ def update(event, context):
 
         user_old = table.get_item(Key=duplicate_key)
         if 'Item' not in user_old:
-            raise ex.NoRecordExvception(
+            raise ex.NoRecordException(
                 '%s:%s is not fount' % (Config().table_name, event['path']['user_id'])
             )
         user = user_old['Item']
