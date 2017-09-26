@@ -13,7 +13,7 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Key={'item_id': event['path']['id']}
+            Key={'id': event['path']['id']}
         )
 
         if not response.get('Item'):
