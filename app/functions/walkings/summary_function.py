@@ -61,7 +61,7 @@ def create(event, context):
         table = dynamodb.Table(Config().table_name)
 
         duplicate_key = {
-            'id':  event['body']['user_id'],
+            'user_id':  event['body']['user_id'],
             'started_at': event['body']['started_at']
         }
 
