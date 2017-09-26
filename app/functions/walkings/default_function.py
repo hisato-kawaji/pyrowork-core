@@ -13,33 +13,30 @@ def get_record_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
-        if event['path']['measure_type']:
-            keys = {
-                'user_id': event['path']['user_id'],
-                'started_at': event['path']['started_at'],
-                'measure_type': event['path']['measure_type']
-            }
-            response = table.get_item(
-                Key=keys
-            )
-
-        else:
-            user_cond = Key('user_id').eq(event['path']['id'])
-            start_cond = Key('started_at').eq(event['path']['start'])
-
-            response = table.query(
-                KeyConditionExpression=user_cond & start_cond
-            )
-
-        if not response.get('Item') and not response.get('Items'):
+        user_cond = Key('user_id').eq(event['path']['id'])
+        start_cond = Key('started_at').eq(event['path']['start'])
+        response = table.query(
+            KeyConditionExpression=user_cond & start_cond
+        )
+        if not response.get('Items'):
             raise ex.NoRecordsException(
                 '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        if response.get['Items']:
-            return response['Items']
+        if event['path'].get('measure_type', None):
+            for item in response['Items']:
+                if item['measure_type'] == event['path']['measure_type']:
+                    return item
+
+            raise ex.NoRecordsException(
+                '%s:%s:%s is not found' % (
+                    Config().table_name,
+                    event['path']['id'],
+                    event['path']['measure_type']
+                )
+            )
         else:
-            return response['Item']
+            return response['Items']
 
     return Executor.run(main, event, context)
 
@@ -78,7 +75,6 @@ def create(event, context):
         duplicate_key = {
             'user_id': event['body']['user_id'],
             'started_at': event['body']['started_at'],
-            'measure_type': event['body']['measure_type']
         }
 
         duplicated = table.get_item(Key=duplicate_key)
