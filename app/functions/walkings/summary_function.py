@@ -4,9 +4,6 @@
 from __future__ import print_function
 
 import boto3
-import sys
-import os
-from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
 from boto3.dynamodb.conditions import Key
@@ -38,7 +35,7 @@ def get_by_time(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Keys={
+            Key={
                 'user_id': event['path']['id'],
                 'started_at': event['path']['started_at']
             }
@@ -54,18 +51,19 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        user_id = event['event']['user_id']
+        user_id = event['body']['user_id']
         duplicate_key = {
             'id': user_id,
             'started_at': event['body']['started_at'],
             'measure_type': event['body']['measure_type']
         }
 
-        if table.get_item(Keys=duplicate_key):
+        duplicated = table.get_item(Keys=duplicate_key)
+        if 'Item' in duplicated:
             raise ex.InvalidValueExvception('Duplicated primary key')
 
         user = {
-            'user_id': user_id,
+            'user_id': None,
             'time': None,
             'measure_type': None,
             "r_lat_max": None,
@@ -79,8 +77,8 @@ def create(event, context):
             "front_behind": None,
             "left_right": None,
             'started_at': None,
-            'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            'created_at': Config().now(),
+            'updated_at': Config().now()
         }
 
         user.update(event['body'])
