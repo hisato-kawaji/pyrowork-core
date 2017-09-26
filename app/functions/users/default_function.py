@@ -103,6 +103,8 @@ def update(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
+        if 'id' in event['body']:
+            raise ex.InvalidValueException('You cannot include id column in your request object')
 
         duplicate_key = {
             'id': event['path']['id']
@@ -111,7 +113,7 @@ def update(event, context):
         user_old = table.get_item(Key=duplicate_key)
         if 'Item' not in user_old:
             raise ex.NoRecordsException(
-                '%s:%s is not fount' % (Config().table_name, event['path']['id'])
+                '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
         user = user_old['Item']
         user.update(event['body'])
