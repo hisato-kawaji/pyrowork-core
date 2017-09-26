@@ -43,6 +43,8 @@ def save(event, context):
 
         if 'Item' not in latest_record:
             latest_record.update(event['body'])
+            # TODO:event['body']に入ってくる指定のカラムのみをDecimalに変換する仕組みを作る
+            latest_record['menu_id'] = decimal.Decimal(latest_record['menu_id'])
             latest_record['updated_at'] = Config().now()
 
         else:
