@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import boto3
+import decimal
 from framework import Config, Executor
 from framework import Exceptions as ex
 
@@ -13,7 +14,7 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Key={'id': event['path']['id']}
+            Key={'id': decimal.Decimal(event['path']['id'])}
         )
 
         if not response.get('Item'):
