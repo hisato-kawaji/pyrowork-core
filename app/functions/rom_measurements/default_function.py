@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import datetime
+from datetime import timezone, timedelta
 import boto3
 from framework import Config, Executor
 from framework import Exceptions as ex
@@ -16,7 +17,8 @@ def get_by_id(event, context):
         table = dynamodb.Table(Config().table_name)
 
         if 'created_at' in event['path']:
-            created_at = datetime.datetime.fromtimestamp(event['path']['created_at'])
+            JST = timezone(timedelta(hours=+9), 'JST')
+            created_at = datetime.datetime.fromtimestamp(int(event['path']['created_at']), JST)
             keys = {
                 'user_id': event['path']['user_id'],
                 'created_at': created_at.strftime('%Y-%m-%d %H:%M:%S'),
