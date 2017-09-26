@@ -50,7 +50,7 @@ def save(event, context):
         else:
             latest_record = {
                 'user_id': None,
-                'memu_id': None,
+                'menu_id': None,
                 'started_at': None,
                 'created_at': Config().now(),
                 'updated_at': Config().now()

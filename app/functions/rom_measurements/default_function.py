@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import datetime
 import boto3
 from framework import Config, Executor
 from framework import Exceptions as ex
@@ -14,29 +15,29 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        if event['path']['created_at'] and event['path']['item_id']:
+        if 'created_at' in event['path']:
+            created_at = datetime.datetime.fromtimestamp(event['path']['created_at'])
             keys = {
                 'user_id': event['path']['user_id'],
-                'created_at': event['path']['created_at'],
-                'item_id': event['path']['item_id']
+                'created_at': created_at.strftime('%Y-%m-%d %H:%M:%S'),
             }
             response = table.get_item(
                 Key=keys
             )
 
-        elif event['path']['created_at']:
+        elif 'item_id' in event['path']:
             user_cond = Key('user_id').eq(event['path']['user_id'])
-            start_cond = Key('created_at').eq(event['path']['created'])
-
+            item_cond = Key('item_id').eq(event['path']['item_id'])
             response = table.query(
-                KeyConditionExpression=user_cond & start_cond
+                IndexName='UserId-ItemId',
+                KeyConditionExpression=user_cond & item_cond
             )
 
         else:
             user_cond = Key('user_id').eq(event['path']['user_id'])
 
             response = table.query(
-                KeyConditionExpression=user_cond & start_cond
+                KeyConditionExpression=user_cond
             )
 
         if not response.get('Item') and not response.get('Items'):
