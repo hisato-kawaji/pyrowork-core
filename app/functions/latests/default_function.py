@@ -54,6 +54,8 @@ def save(event, context):
                 'updated_at': Config().now()
             }
             latest_record.update(event['body'])
+            # TODO:event['body']に入ってくる指定のカラムのみをDecimalに変換する仕組みを作る
+            latest_record['menu_id'] = decimal.Decimal(latest_record['menu_id'])
         response = table.put_item(Item=latest_record)
 
         return response
