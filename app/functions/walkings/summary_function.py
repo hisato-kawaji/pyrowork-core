@@ -13,7 +13,7 @@ def get_by_type(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
-        summary_cond = Key('user_id').eq(event['path']['id']) & \
+        summary_cond = Key('user_id').eq(event['path']['user_id']) & \
             Key('measure_type').eq(event['path']['type'])
         response = table.query(
             IndexName='WalkingSummary',
@@ -22,7 +22,7 @@ def get_by_type(event, context):
 
         if not response.get('Items'):
             raise ex.NoRecordsException(
-                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+                '%s:%s is not found' % (Config().table_name, event['path']['user_id'])
             )
 
         return response
@@ -36,7 +36,7 @@ def get_by_time(event, context):
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
             Key={
-                'user_id': event['path']['id'],
+                'user_id': event['path']['user_id'],
                 'started_at': event['path']['started_at']
             }
         )
@@ -50,7 +50,7 @@ def get_by_time(event, context):
                 )
             )
 
-        return response
+        return response['Item']
 
     return Executor.run(main, event, context)
 
@@ -60,9 +60,8 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        user_id = event['body']['user_id']
         duplicate_key = {
-            'id': user_id,
+            'id':  event['body']['user_id'],
             'started_at': event['body']['started_at']
         }
 
