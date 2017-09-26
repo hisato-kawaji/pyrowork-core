@@ -67,7 +67,7 @@ def create(event, context):
 
         duplicated = table.get_item(Key=duplicate_key)
         if 'Item' in duplicated:
-            raise ex.InvalidValueExvception('Duplicated primary key')
+            raise ex.InvalidValueException('Duplicated primary key')
 
         user = {
             'user_id': None,
