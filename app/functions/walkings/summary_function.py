@@ -41,6 +41,15 @@ def get_by_time(event, context):
             }
         )
 
+        if not response.get('Item'):
+            raise ex.NoRecordsException(
+                '%s:%s:%s is not found' % (
+                    Config().table_name,
+                    event['path']['id'],
+                    event['path']['started_at']
+                )
+            )
+
         return response
 
     return Executor.run(main, event, context)
@@ -54,11 +63,10 @@ def create(event, context):
         user_id = event['body']['user_id']
         duplicate_key = {
             'id': user_id,
-            'started_at': event['body']['started_at'],
-            'measure_type': event['body']['measure_type']
+            'started_at': event['body']['started_at']
         }
 
-        duplicated = table.get_item(Keys=duplicate_key)
+        duplicated = table.get_item(Key=duplicate_key)
         if 'Item' in duplicated:
             raise ex.InvalidValueExvception('Duplicated primary key')
 
