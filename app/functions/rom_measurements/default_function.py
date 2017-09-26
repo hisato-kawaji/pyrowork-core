@@ -16,9 +16,9 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        if 'created_at' in event['path']:
-            JST = timezone(timedelta(hours=+9), 'JST')
-            created_at = datetime.datetime.fromtimestamp(int(event['path']['created_at']), JST)
+        if event['path'].get('created_at', None):
+            jst = timezone(timedelta(hours=+9), 'JST')
+            created_at = datetime.datetime.fromtimestamp(int(event['path']['created_at']), jst)
             keys = {
                 'user_id': event['path']['user_id'],
                 'created_at': created_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -27,7 +27,7 @@ def get_by_id(event, context):
                 Key=keys
             )
 
-        elif 'item_id' in event['path']:
+        elif event['path'].get('item_id', None):
             user_cond = Key('user_id').eq(event['path']['user_id'])
             item_cond = Key('item_id').eq(event['path']['item_id'])
             response = table.query(
@@ -60,18 +60,8 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        duplicate_key = {
-            'user_id': event['path']['user_id'],
-            'cognito_id': event['path']['created_at'],
-            'item_id': event['path']['item_id']
-        }
-
-        duplicated = table.get_item(Key=duplicate_key)
-        if 'Item' in duplicated:
-            raise ex.InvalidValueException('Duplicated primary key')
-
         rom_measurement = {
-            'user': event['path']['user_id'],
+            'user': None,
             'item_id': None,
             'init_angle': None,
             'angle': None,
