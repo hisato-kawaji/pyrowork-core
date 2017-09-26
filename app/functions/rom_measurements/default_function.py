@@ -4,9 +4,6 @@
 from __future__ import print_function
 
 import boto3
-import sys
-import os
-from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
 from boto3.dynamodb.conditions import Key
@@ -75,8 +72,8 @@ def create(event, context):
             'item_id': None,
             'init_angle': None,
             'angle': None,
-            'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            'created_at': Config().now(),
+            'updated_at': Config().now()
         }
 
         rom_measurement.update(event['body'])

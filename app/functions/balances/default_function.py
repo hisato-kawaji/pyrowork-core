@@ -77,8 +77,8 @@ def create(event, context):
             'time': None,
             'started_at': None,
             'ended_at': None,
-            'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            'created_at': Config().now(),
+            'updated_at': Config().now()
         }
 
         user.update(event['body'])

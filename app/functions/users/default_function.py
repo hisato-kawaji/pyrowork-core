@@ -3,11 +3,8 @@
 
 from __future__ import print_function
 
-import boto3
-import sys
-import os
 import uuid
-from datetime import datetime
+import boto3
 from framework import Config, Executor
 from framework import Exceptions as ex
 from boto3.dynamodb.conditions import Key
@@ -90,8 +87,8 @@ def create(event, context):
             'birthday': None,
             'entered_at': None,
             'left_at': None,
-            'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-            'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            'created_at': Config().now(),
+            'updated_at': Config().now()
         }
 
         user.update(event['body'])
@@ -118,7 +115,7 @@ def update(event, context):
             )
         user = user_old['Item']
         user.update(event['body'])
-        user['updated_at'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        user['updated_at'] = Config().now()
         response = table.put_item(Item=user)
 
         return response

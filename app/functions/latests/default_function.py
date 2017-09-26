@@ -4,9 +4,6 @@
 from __future__ import print_function
 
 import boto3
-import sys
-import os
-from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
 
@@ -52,8 +49,8 @@ def save(event, context):
                 'user_id': None,
                 'memu_id': None,
                 'started_at': None,
-                'created_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
-                'updated_at': datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+                'created_at': Config().now(),
+                'updated_at': Config().now()
             }
             latest_record.update(event['body'])
         response = table.put_item(Item=latest_record)

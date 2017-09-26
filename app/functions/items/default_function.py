@@ -4,8 +4,6 @@
 from __future__ import print_function
 
 import boto3
-import sys
-import os
 from framework import Config, Executor
 from framework import Exceptions as ex
 
