@@ -13,12 +13,15 @@ def get_record_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
-        user_cond = Key('user_id').eq(event['path']['user_id'])
-        start_cond = Key('started_at').eq(event['path']['started_at'])
-        response = table.query(
-            KeyConditionExpression=user_cond & start_cond
+        keys = {
+            'user_id': event['path']['user_id'],
+            'started_at': event['path']['started_at']
+        }
+        response = table.get_item(
+            Key=keys
         )
-        if not response.get('Items'):
+
+        if not response.get('Item'):
             raise ex.NoRecordsException(
                 '%s:%s:%s is not found' % (
                     Config().table_name,
@@ -27,21 +30,8 @@ def get_record_by_unique(event, context):
                 )
             )
 
-        if event['path'].get('measure_type', None):
-            for item in response['Items']:
-                if item['measure_type'] == event['path']['measure_type']:
-                    return item
-
-            raise ex.NoRecordsException(
-                '%s:%s:%s:%s is not found' % (
-                    Config().table_name,
-                    event['path']['user_id'],
-                    event['path']['started_at'],
-                    event['path']['measure_type']
-                )
-            )
         else:
-            return response['Items']
+            return response['Item']
 
     return Executor.run(main, event, context)
 
