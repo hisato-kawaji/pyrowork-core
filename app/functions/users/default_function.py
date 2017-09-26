@@ -105,13 +105,13 @@ def update(event, context):
         table = dynamodb.Table(Config().table_name)
 
         duplicate_key = {
-            'id': event['path']['user_id']
+            'id': event['path']['id']
         }
 
         user_old = table.get_item(Key=duplicate_key)
         if 'Item' not in user_old:
             raise ex.NoRecordsException(
-                '%s:%s is not fount' % (Config().table_name, event['path']['user_id'])
+                '%s:%s is not fount' % (Config().table_name, event['path']['id'])
             )
         user = user_old['Item']
         user.update(event['body'])
