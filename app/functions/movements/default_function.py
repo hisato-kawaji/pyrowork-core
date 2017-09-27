@@ -40,8 +40,8 @@ def get_stream_by_unique(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         movement_cond = Key('movement_id').eq(event['path']['movement_id'])
-        if event['path']['measure_type']:
-            type_cond = Key('started_at').eq(event['path']['measure_type'])
+        if event['path'].get('measure_type', None):
+            type_cond = Key('measure_type').eq(event['path']['measure_type'])
             response = table.query(
                 KeyConditionExpression=movement_cond & type_cond
             )
