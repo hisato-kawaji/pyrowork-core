@@ -22,7 +22,7 @@ def get_by_id(event, context):
 
         if not response.get('Item'):
             raise ex.NoRecordsException(
-                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+                '%s:%s is not found' % (Config().table_name, event['path']['user_id'])
             )
 
         return response['Item']
