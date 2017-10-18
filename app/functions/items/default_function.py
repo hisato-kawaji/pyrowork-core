@@ -7,6 +7,7 @@ import boto3
 import decimal
 from framework import Config, Executor
 from framework import Exceptions as ex
+from boto3.dynamodb.conditions import Key
 
 
 def get_by_id(event, context):
@@ -14,7 +15,10 @@ def get_by_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Key={'id': decimal.Decimal(event['path']['id'])}
+            Key={
+                'part': event['path']['part'],
+                'id': decimal.Decimal(event['path']['id'])
+            }
         )
 
         if not response.get('Item'):
@@ -23,6 +27,24 @@ def get_by_id(event, context):
             )
 
         return response['Item']
+
+    return Executor.run(main, event, context)
+
+
+def get_by_part(event, context):
+    def main(event, context):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(Config().table_name)
+        response = table.query(
+            KeyConditionExpression=Key('part').eq(event['path']['part'])
+        )
+
+        if not response.get('Items'):
+            raise ex.NoRecordsException(
+                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+            )
+
+        return response['Items']
 
     return Executor.run(main, event, context)
 
