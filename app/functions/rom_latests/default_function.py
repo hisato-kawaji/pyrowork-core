@@ -16,7 +16,7 @@ def get_by_id(event, context):
         response = table.get_item(
             Key={
                 'user_id': event['path']['user_id'],
-                'menu_id': decimal.Decimal(event['path']['menu_id'])
+                'item_id': decimal.Decimal(event['path']['item_id'])
             }
         )
 
@@ -37,27 +37,27 @@ def save(event, context):
 
         duplicate_key = {
             'user_id': event['body']['user_id'],
-            'menu_id': decimal.Decimal(event['body']['menu_id'])
+            'item_id': decimal.Decimal(event['body']['item_id'])
         }
         latest_record = table.get_item(Key=duplicate_key)
 
         if 'Item' not in latest_record:
             latest_record.update(event['body'])
             # TODO:event['body']に入ってくる指定のカラムのみをDecimalに変換する仕組みを作る
-            latest_record['menu_id'] = decimal.Decimal(latest_record['menu_id'])
+            latest_record['item_id'] = decimal.Decimal(latest_record['item_id'])
             latest_record['updated_at'] = Config().now()
 
         else:
             latest_record = {
                 'user_id': None,
-                'menu_id': None,
+                'item_id': None,
                 'started_at': None,
                 'created_at': Config().now(),
                 'updated_at': Config().now()
             }
             latest_record.update(event['body'])
             # TODO:event['body']に入ってくる指定のカラムのみをDecimalに変換する仕組みを作る
-            latest_record['menu_id'] = decimal.Decimal(latest_record['menu_id'])
+            latest_record['item_id'] = decimal.Decimal(latest_record['item_id'])
         response = table.put_item(Item=latest_record)
 
         return response
