@@ -22,6 +22,13 @@ class Config:
     def now(self):
         return (dt.utcnow() + datetime.timedelta(hours=9)).strftime('%Y-%m-%d %H:%M:%S')
 
+    def now_date(self):
+        return (dt.utcnow() + datetime.timedelta(hours=9)).strftime('%Y-%m-%d')
+
+    def now_time(self):
+        return (dt.utcnow() + datetime.timedelta(hours=9)).strftime('%H:%M:%S')
+
+
 class Executor:
     __instance = None
 

@@ -23,10 +23,28 @@ def confirm(event, context):
             UserAttributes=user_attributes
         )
 
+        institution = {
+            'cognito_sub': event["request"]["userAttributes"].get("sub"),
+            'name': event["request"]["userAttributes"].get("name"),
+            'admin': event["request"]["userAttributes"].get("custom:admin"),
+            'username': event.get("userName"),
+            'email': event["request"]["userAttributes"].get("email"),
+            'company': event["request"]["userAttributes"].get("custom:company"),
+        }
+
+        if event["request"]["userAttributes"].get("mi_code") is not None:
+            institution["mi_code"] = event["request"]["userAttributes"].get("custom:mi_code")
+        if event["request"]["userAttributes"].get("cb_code") is not None:
+            institution["cb_code"] = event["request"]["userAttributes"].get("custom:cb_code")
+
+        request_body = {
+            'body': institution
+        }
+
         lambda_client = boto3.client('lambda')
         lambda_response = lambda_client.invoke(
             FunctionName=Config.create_function_name,
-            Payload=json.dumps(event),
+            Payload=json.dumps(request_body),
             Qualifier='Release'
         )
 

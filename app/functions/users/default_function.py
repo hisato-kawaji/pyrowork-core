@@ -82,11 +82,10 @@ def create(event, context):
             'last_name': None,
             'family_name_kana': None,
             'last_name_kana': None,
-            'nc_level': None,
             'gender': None,
             'birthday': None,
             'entered_at': None,
-            'left_at': None,
+            'started_at': Config().now_date(),
             'created_at': Config().now(),
             'updated_at': Config().now()
         }

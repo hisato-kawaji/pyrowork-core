@@ -78,8 +78,6 @@ def create(event, context):
             'username': None,
             'email': None,
             'company': None,
-            'company_kana': None,
-            'registerd_at': None,
             'created_at': Config().now(),
             'updated_at': Config().now()
         }
