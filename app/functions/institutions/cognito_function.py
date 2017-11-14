@@ -32,9 +32,9 @@ def confirm(event, context):
             'company': event["request"]["userAttributes"].get("custom:company"),
         }
 
-        if event["request"]["userAttributes"].get("mi_code") is not None:
+        if event["request"]["userAttributes"].get("custom:mi_code") is not None:
             institution["mi_code"] = event["request"]["userAttributes"].get("custom:mi_code")
-        if event["request"]["userAttributes"].get("cb_code") is not None:
+        if event["request"]["userAttributes"].get("custom:cb_code") is not None:
             institution["cb_code"] = event["request"]["userAttributes"].get("custom:cb_code")
 
         request_body = {
@@ -48,7 +48,7 @@ def confirm(event, context):
             Qualifier='Release'
         )
 
-        return lambda_response
+        return json.loads(lambda_response['Payload'].read())
 
     return Executor.run(main, event, context)
 
