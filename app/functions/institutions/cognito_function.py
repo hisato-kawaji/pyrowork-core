@@ -19,7 +19,7 @@ def confirm(event, context):
         cognito_client = boto3.client('cognito-idp')
         cognito_client.admin_update_user_attributes(
             UserPoolId=Config().cognito_user_pool_id,
-            Username=event['UserName'],
+            Username=event['userName'],
             UserAttributes=user_attributes
         )
 
@@ -27,7 +27,6 @@ def confirm(event, context):
             'cognito_sub': event["request"]["userAttributes"].get("sub"),
             'name': event["request"]["userAttributes"].get("name"),
             'admin': event["request"]["userAttributes"].get("custom:admin"),
-            'username': event.get("userName"),
             'email': event["request"]["userAttributes"].get("email"),
             'company': event["request"]["userAttributes"].get("custom:company"),
         }
