@@ -42,7 +42,7 @@ def confirm(event, context):
 
         lambda_client = boto3.client('lambda')
         lambda_response = lambda_client.invoke(
-            FunctionName=Config.create_function_name,
+            FunctionName=Config().create_function_name,
             Payload=json.dumps(request_body),
             Qualifier='Release'
         )
