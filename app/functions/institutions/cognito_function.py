@@ -15,7 +15,7 @@ def attribute(name, value):
 
 def confirm(event, context):
     def main(event, context):
-        user_attributes = [].append(attribute('email_verified', 'true'))
+        user_attributes = [{"Name": 'email_verified', "Value": 'true'}]
         cognito_client = boto3.client('cognito-idp')
         cognito_client.admin_update_user_attributes(
             UserPoolId=Config().cognito_user_pool_id,
