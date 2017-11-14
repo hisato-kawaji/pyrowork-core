@@ -26,6 +26,7 @@ def confirm(event, context):
         institution = {
             'cognito_sub': event["request"]["userAttributes"].get("sub"),
             'name': event["request"]["userAttributes"].get("name"),
+            'username': event['userName'],
             'admin': event["request"]["userAttributes"].get("custom:admin"),
             'email': event["request"]["userAttributes"].get("email"),
             'company': event["request"]["userAttributes"].get("custom:company"),
