@@ -45,7 +45,7 @@ def get_by_time(event, context):
             raise ex.NoRecordsException(
                 '%s:%s:%s is not found' % (
                     Config().table_name,
-                    event['path']['id'],
+                    event['path']['user_id'],
                     event['path']['started_at']
                 )
             )
