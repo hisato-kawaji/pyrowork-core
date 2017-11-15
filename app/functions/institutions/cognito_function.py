@@ -48,7 +48,7 @@ def confirm(event, context):
             Qualifier='Release'
         )
 
-        return json.loads(lambda_response['Payload'].read())
+        return event
 
     return Executor.run(main, event, context)
 
