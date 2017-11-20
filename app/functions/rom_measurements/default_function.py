@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import decimal
 import datetime
 from datetime import timezone, timedelta
 import boto3
@@ -61,15 +62,18 @@ def create(event, context):
         table = dynamodb.Table(Config().table_name)
 
         rom_measurement = {
-            'user': None,
+            'user_id': None,
             'item_id': None,
-            'init_angle': None,
+            'position': None,
             'angle': None,
+            'init_angle': None,
+            'started_at': None,
             'created_at': Config().now(),
             'updated_at': Config().now()
         }
 
         rom_measurement.update(event['body'])
+        rom_measurement['item_id'] = decimal.Decimal(rom_measurement['item_id'])
         response = table.put_item(Item=rom_measurement)
 
         return response
