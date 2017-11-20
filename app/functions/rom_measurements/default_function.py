@@ -26,7 +26,7 @@ def get_by_id(event, context):
 
         elif event['path'].get('item_id', None):
             user_cond = Key('user_id').eq(event['path']['user_id'])
-            item_cond = Key('item_id').eq(event['path']['item_id'])
+            item_cond = Key('item_id').eq(decimal.Decimal(event['path']['item_id']))
             response = table.query(
                 IndexName='UserId-ItemId',
                 KeyConditionExpression=user_cond & item_cond
