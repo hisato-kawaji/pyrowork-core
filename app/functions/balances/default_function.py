@@ -49,7 +49,7 @@ def get_stream_by_unique(event, context):
                 '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        return response['Item']
+        return response['Items']
 
     return Executor.run(main, event, context)
 
