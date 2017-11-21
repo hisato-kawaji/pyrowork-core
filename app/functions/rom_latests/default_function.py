@@ -36,7 +36,7 @@ def save(event, context):
         table = dynamodb.Table(Config().table_name)
 
         duplicate_key = {
-            'user_position_id': event['body']['user_id'],
+            'user_position_id': event['body']['user_position_id'],
             'item_id': decimal.Decimal(event['body']['item_id'])
         }
         latest_record = table.get_item(Key=duplicate_key)
