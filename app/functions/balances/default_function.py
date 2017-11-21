@@ -4,9 +4,6 @@
 from __future__ import print_function
 
 import boto3
-import sys
-import os
-from datetime import datetime
 from framework import Config, Executor
 from framework import Exceptions as ex
 from boto3.dynamodb.conditions import Key
@@ -42,14 +39,14 @@ def get_stream_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
-        balance_cond = Key('balance_id').eq(event['path']['balance_id'])
+        balance_cond = Key('balance_id').eq(event['path']['id'])
         response = table.query(
             KeyConditionExpression=balance_cond
         )
 
         if not response.get('Items'):
             raise ex.NoRecordsException(
-                '%s:%s is not found' % (Config().table_name, event['path']['balance_id'])
+                '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
         return response['Item']
