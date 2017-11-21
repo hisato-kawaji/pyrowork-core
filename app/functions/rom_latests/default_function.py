@@ -15,7 +15,7 @@ def get_by_id(event, context):
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
             Key={
-                'user_id': event['path']['user_id'],
+                'user_position_id': event['path']['user_id'],
                 'item_id': decimal.Decimal(event['path']['item_id'])
             }
         )
@@ -36,7 +36,7 @@ def save(event, context):
         table = dynamodb.Table(Config().table_name)
 
         duplicate_key = {
-            'user_id': event['body']['user_id'],
+            'user_position_id': event['body']['user_id'],
             'item_id': decimal.Decimal(event['body']['item_id'])
         }
         latest_record = table.get_item(Key=duplicate_key)
@@ -49,7 +49,7 @@ def save(event, context):
 
         else:
             latest_record = {
-                'user_id': None,
+                'user_position_id': None,
                 'item_id': None,
                 'started_at': None,
                 'created_at': Config().now(),
