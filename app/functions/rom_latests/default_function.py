@@ -56,7 +56,7 @@ def save(event, context):
 
         duplicate_key = {
             'user_id': event['body']['user_id'],
-            'item_position_id': decimal.Decimal(event['body']['item_id'])
+            'item_position_id': event['body']['item_id']
         }
         latest_record = table.get_item(Key=duplicate_key)
 
