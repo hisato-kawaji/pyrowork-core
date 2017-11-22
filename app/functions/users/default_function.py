@@ -102,7 +102,7 @@ def update(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
-        if 'id' in event['body']:
+        if 'id' not in event['body']:
             raise ex.InvalidValueException('You cannot include id column in your request object')
 
         duplicate_key = {
