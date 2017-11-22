@@ -36,7 +36,7 @@ def get_by_user_id(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.query(
-            KeyConditionExpression=Key('user_id').eq(event['path']['id'])
+            KeyConditionExpression=Key('user_id').eq(event['path']['user_id'])
         )
 
         if not response.get('Items'):
