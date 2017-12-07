@@ -95,9 +95,9 @@ def create(event, context):
 
         user.update(event['body'])
         user['id'] = user_id
-
+        allowable_keys = ['ended_at', 'left_at', 'id']
         for key in list(user):
-            if user[key] is None or user[key] == '':
+            if user[key] in [None, ''] and key in allowable_keys:
                 user.pop(key)
 
         response = table.put_item(Item=user)
