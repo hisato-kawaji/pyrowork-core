@@ -21,7 +21,8 @@ def get_by_id(event, context):
                 'started_at': event['path']['created_at'],
             }
             response = table.get_item(
-                Key=keys
+                Key=keys,
+                ScanIndexForward=False
             )
 
         elif event['path'].get('item_id', None):
@@ -29,14 +30,16 @@ def get_by_id(event, context):
             item_cond = Key('item_id').eq(decimal.Decimal(event['path']['item_id']))
             response = table.query(
                 IndexName='UserId-ItemId',
-                KeyConditionExpression=user_cond & item_cond
+                KeyConditionExpression=user_cond & item_cond,
+                ScanIndexForward=False
             )
 
         else:
             user_cond = Key('user_id').eq(event['path']['user_id'])
 
             response = table.query(
-                KeyConditionExpression=user_cond
+                KeyConditionExpression=user_cond,
+                ScanIndexForward=False
             )
 
         if not response.get('Item') and not response.get('Items'):
