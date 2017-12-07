@@ -91,6 +91,9 @@ def create(event, context):
         }
 
         user.update(event['body'])
+        for key, val in user.items():
+            if user[key] is None or user[key] == '':
+                user.pop(key)
         response = table.put_item(Item=user)
 
         return response
@@ -117,6 +120,9 @@ def update(event, context):
         user = user_old['Item']
         user.update(event['body'])
         user['updated_at'] = Config().now()
+        for key, val in user.items():
+            if user[key] is None or user[key] == '':
+                user.pop(key)
         response = table.put_item(Item=user)
 
         return response
