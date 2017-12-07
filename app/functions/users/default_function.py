@@ -63,7 +63,10 @@ def create(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
 
-        if 'id' in event['body']:
+        if 'id' in event['body'] and event['body']['id'] != '':
+            raise ex.InvalidValueException('You cannot include id column in your request object')
+
+        if 'id' in event['body'] and event['body']['id'] is None:
             raise ex.InvalidValueException('You cannot include id column in your request object')
 
         user_id = str(uuid.uuid4())
@@ -75,7 +78,7 @@ def create(event, context):
             raise ex.InvalidValueException('Duplicated primary key')
 
         user = {
-            'id': user_id,
+            'id': None,
             'institution_id': None,
             'patient_id': None,
             'family_name': None,
@@ -91,9 +94,12 @@ def create(event, context):
         }
 
         user.update(event['body'])
-        for key, val in user.items():
+        user['id'] = user_id
+
+        for key in list(user):
             if user[key] is None or user[key] == '':
                 user.pop(key)
+
         response = table.put_item(Item=user)
 
         return response
@@ -120,7 +126,7 @@ def update(event, context):
         user = user_old['Item']
         user.update(event['body'])
         user['updated_at'] = Config().now()
-        for key, val in user.items():
+        for key in list(user):
             if user[key] is None or user[key] == '':
                 user.pop(key)
         response = table.put_item(Item=user)
