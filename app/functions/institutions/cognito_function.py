@@ -75,5 +75,14 @@ def forget_password(event, context):
     return Executor.run(main, event, context)
 
 
+def get_user(event, context):
+    def main(event, context):
+        client = boto3.client('cognito-idp')
+        return client.get_user(
+            AccessToken=event['access_token']
+        )
+    return Executor.run(main, event, context)
+
+
 if __name__ == '__main__':
     print('Cannot execute lambda functions directory. Try to use test console command')
