@@ -27,6 +27,24 @@ def get_by_id(event, context):
     return Executor.run(main, event, context)
 
 
+def get_by_sub(event, context):
+    def main(event, context):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table(Config().table_name)
+        response = table.get_item(
+            Key={'cognito_sub': event['sub']}
+        )
+
+        if not response.get('Item'):
+            raise ex.NoRecordsException(
+                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+            )
+
+        return response['Item']
+
+    return Executor.run(main, event, context)
+
+
 def get_all(event, context):
     def main(event, context):
 
