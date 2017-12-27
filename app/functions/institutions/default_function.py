@@ -32,12 +32,12 @@ def get_by_sub(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
         response = table.get_item(
-            Key={'cognito_sub': event['sub']}
+            Key={'cognito_sub': event['path']['sub']}
         )
 
         if not response.get('Item'):
             raise ex.NoRecordsException(
-                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+                '%s:%s is not found' % (Config().table_name, event['path']['sub'])
             )
 
         return response['Item']
