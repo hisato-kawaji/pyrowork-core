@@ -8,6 +8,7 @@ import boto3
 from framework import Config, Executor
 from framework import Exceptions as ex
 
+from boto3.dynamodb.conditions import Key
 
 def get_by_id(event, context):
     def main(event, context):
@@ -31,16 +32,17 @@ def get_by_sub(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
-        response = table.get_item(
-            Key={'cognito_sub': event['path']['sub']}
+        response = table.query(
+            IndexName="Institution-CognitoSub",
+            KeyConditionExpression=Key('cognito_sub').eq(event['path']['sub'])
         )
 
-        if not response.get('Item'):
+        if not response.get('Items'):
             raise ex.NoRecordsException(
                 '%s:%s is not found' % (Config().table_name, event['path']['sub'])
             )
 
-        return response['Item']
+        return response['Items']
 
     return Executor.run(main, event, context)
 
