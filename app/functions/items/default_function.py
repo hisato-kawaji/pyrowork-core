@@ -41,7 +41,7 @@ def get_by_part(event, context):
 
         if not response.get('Items'):
             raise ex.NoRecordsException(
-                '%s:%s is not found' % (Config().table_name, event['path']['id'])
+                '%s:%s is not found' % (Config().table_name, event['path']['part'])
             )
 
         return response['Items']
