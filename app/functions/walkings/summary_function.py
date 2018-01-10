@@ -81,6 +81,8 @@ def create(event, context):
             "r_foot_min": None,
             "l_foot_max": None,
             "l_foot_min": None,
+            "r_foot_back_max": None,
+            "l_foot_back_max": None,
             "front_behind": None,
             "left_right": None,
             'started_at': None,
