@@ -40,24 +40,31 @@ def get_stream_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
+
+        params = {}
+        params['Limit'] = int(event['querystring'].get('limit', 5000))
+        params['ScanIndexForward'] = False
+
+        if event['querystring'].get('eskey', None):
+            params['ExclusiveStartKey'] = {
+                'walking_id': event['path']['id'],
+                'time': event['querystring']['eskey'].replace('+', ' ')
+            }
         walking_cond = Key('walking_id').eq(event['path']['id'])
         if event['path'].get('measure_type', None):
             type_cond = Key('measure_type').eq(event['path']['measure_type'])
-            response = table.query(
-                KeyConditionExpression=walking_cond & type_cond
-            )
+            params['KeyConditionExpression'] = walking_cond & type_cond
 
         else:
-            response = table.query(
-                KeyConditionExpression=walking_cond
-            )
+            params['KeyConditionExpression'] = walking_cond
 
+        response = table.query(**params)
         if not response.get('Items'):
             raise ex.NoRecordsException(
                 '%s:%s is not found' % (Config().table_name, event['path']['id'])
             )
 
-        return response['Items']
+        return response
 
     return Executor.run(main, event, context)
 
