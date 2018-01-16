@@ -42,7 +42,7 @@ def get_stream_by_unique(event, context):
         table = dynamodb.Table(Config().table_name)
 
         params = {}
-        params['Limit'] = int(event['querystring'].get('limit', 5000))
+        params['Limit'] = int(event['querystring'].get('limit', 3000))
         params['ScanIndexForward'] = False
 
         if event['querystring'].get('eskey', None):
