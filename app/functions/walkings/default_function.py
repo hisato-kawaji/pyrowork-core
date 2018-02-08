@@ -7,6 +7,7 @@ import boto3
 from framework import Config, Executor
 from framework import Exceptions as ex
 from boto3.dynamodb.conditions import Key
+import decimal
 
 
 def get_record_by_unique(event, context):
@@ -48,7 +49,7 @@ def get_stream_by_unique(event, context):
         if event['querystring'].get('eskey', None):
             params['ExclusiveStartKey'] = {
                 'walking_id': event['path']['id'],
-                'time': event['querystring']['eskey'].replace('+', ' ')
+                'ord': decimal.Decimal(event['querystring']['eskey'])
             }
         walking_cond = Key('walking_id').eq(event['path']['id'])
         if event['path'].get('measure_type', None):
