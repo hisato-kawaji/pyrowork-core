@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import boto3
+import decimal
 from framework import Config, Executor
 from framework import Exceptions as ex
 from boto3.dynamodb.conditions import Key
@@ -39,17 +40,25 @@ def get_stream_by_unique(event, context):
     def main(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(Config().table_name)
+
+        params = {}
+        params['Limit'] = int(event['querystring'].get('limit', 3000))
+        params['ScanIndexForward'] = False
+
+        if event['querystring'].get('eskey', None):
+            params['ExclusiveStartKey'] = {
+                'movement_id': event['path']['id'],
+                'ord': decimal.Decimal(event['querystring']['eskey'])
+            }
         movement_cond = Key('movement_id').eq(event['path']['id'])
         if event['path'].get('measure_type', None):
             type_cond = Key('measure_type').eq(event['path']['measure_type'])
-            response = table.query(
-                KeyConditionExpression=movement_cond & type_cond
-            )
+            params['KeyConditionExpression'] = movement_cond & type_cond
 
         else:
-            response = table.query(
-                KeyConditionExpression=movement_cond
-            )
+            params['KeyConditionExpression'] = movement_cond
+
+        response = table.query(**params)
 
         if not response.get('Items'):
             raise ex.NoRecordsException(
@@ -59,7 +68,7 @@ def get_stream_by_unique(event, context):
                 )
             )
 
-        return response['Items']
+        return response
 
     return Executor.run(main, event, context)
 
